@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GOTHAM KNIGHT | Архив Тёмного Рыцаря</title>
+    
+    <!-- SEO -->
+    <meta name="description" content="Официальный архив Бэтмена. База данных по Готэму, персонажам, делам и технологиям Тёмного Рыцаря.">
+    <meta name="keywords" content="Бэтмен, Готэм, Бэтмобиль, Джокер, Робин, Аркхем, Бэтпещера">
+    <meta property="og:title" content="GOTHAM KNIGHT ARCHIVE">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1608889335941-32ac5f2041b9">
+    
+    <!-- Фавикон -->
+    <link rel="icon" type="image/svg+xml" href="assets/icons/bat-logo.svg">
+    
+    <!-- Стили -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Шрифты -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;800&family=Rajdhani:wght@300;400;500;600;700&family=Share+Tech+Mono&family=Electrolize&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Стили для дождя -->
+    <style>
+        .rain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0.3;
+        }
+        
+        /* Анимация мигания статуса */
+        @keyframes status-pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .status-active {
+            animation: status-pulse 2s infinite;
+        }
+        
+        /* Эффект свечения для логотипа */
+        .nav-logo {
+            position: relative;
+        }
+        
+        .nav-logo::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(139, 0, 0, 0.4) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            z-index: -1;
+            filter: blur(10px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Фоновый эффект -->
+    <div class="gothic-bg"></div>
+    <div class="bg-overlay"></div>
+    <div class="rain-overlay" id="rainOverlay"></div>
+    
+    <!-- Навигация -->
+    <nav class="wiki-nav">
+        <div class="nav-container">
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Открыть меню">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <a href="index.html" class="nav-logo">
+                <i class="fas fa-bat" style="color: #8b0000;"></i>
+                <span>GOTHAM KNIGHT</span>
+            </a>
+            
+            <button class="mobile-search-btn" id="mobileSearchBtn" aria-label="Поиск">
+                <i class="fas fa-search"></i>
+            </button>
+            
+            <!-- Поиск -->
+            <div class="nav-search">
+                <input type="text" placeholder="Поиск в архивах..." id="mainSearch">
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </div>
+            
+            <!-- Меню -->
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html" class="active"><i class="fas fa-home"></i> Главная</a>
+                <a href="characters.html"><i class="fas fa-user-secret"></i> Персонажи</a>
+                <a href="cases.html"><i class="fas fa-folder-open"></i> Архив дел</a>
+                <a href="timeline.html"><i class="fas fa-timeline"></i> Хронология</a>
+                <a href="locations.html"><i class="fas fa-map-marked-alt"></i> Локации</a>
+            </div>
+        </div>
+        
+        <!-- Мобильный поиск -->
+        <div class="mobile-search-container" id="mobileSearch">
+            <input type="text" placeholder="Поиск..." id="mobileSearchInput">
+            <button type="submit"><i class="fas fa-search"></i></button>
+        </div>
+    </nav>
+
+    <!-- Основной контейнер -->
+    <div class="wiki-container">
+        <!-- Боковая панель -->
+        <aside class="wiki-sidebar" id="wikiSidebar">
+            <!-- ГОРЯЧИЕ ДЕЛА -->
+            <div class="sidebar-section">
+                <h3><i class="fas fa-fire"></i> ГОРЯЧИЕ ДЕЛА</h3>
+                <div class="hot-cases">
+                    <div class="hot-case">
+                        <div class="case-header">
+                            <span class="case-id">GK-247-91</span>
+                            <span class="case-status active">АКТИВНО</span>
+                        </div>
+                        <div class="case-title">"БЕЙН" в Амёбном Городе</div>
+                        <div class="case-meta">
+                            <i class="far fa-clock"></i> Обновлено 2 ч. назад
+                        </div>
+                    </div>
+                    <div class="hot-case">
+                        <div class="case-header">
+                            <span class="case-id">GK-247-90</span>
+                            <span class="case-status closed">ЗАКРЫТО</span>
+                        </div>
+                        <div class="case-title">Галаван Энтерпрайзис</div>
+                        <div class="case-meta">
+                            <i class="far fa-clock"></i> Закрыто 24.11.2023
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Статистика -->
+            <div class="sidebar-section">
+                <h3><i class="fas fa-chart-bar"></i> СТАТИСТИКА</h3>
+                <div class="sidebar-stats">
+                    <div class="stat-item">
+                        <div class="stat-label">Всего дел</div>
+                        <div class="stat-value">247</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Закрыто</div>
+                        <div class="stat-value">198</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Активно</div>
+                        <div class="stat-value">49</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-label">Инцидентов</div>
+                        <div class="stat-value" id="incidentCount">0</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Основной контент -->
+        <main class="wiki-content">
+            <!-- Герой-секция -->
+            <section class="hero-section">
+                <div class="hero-content">
+                    <h1 class="page-title">
+                        <span class="title-icon">🦇</span>
+                        GOTHAM KNIGHT ARCHIVE
+                        <span class="title-icon">🦇</span>
+                    </h1>
+                    <div class="page-subtitle">
+                        <i class="fas fa-database"></i> 
+                        <span class="status-active">[ СИСТЕМА АКТИВНА ]</span> 
+                        • Уровень доступа: <span class="access-level">Δ DELTA</span>
+                    </div>
+                    <div class="hero-description">
+                        <p>Официальная база данных операций Тёмного Рыцаря. Защищённый архив всех расследований, технологий и противников Бэтмена.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Основные разделы -->
+            <article class="wiki-article">
+                <!-- Глава 1 -->
+                <section id="chapter1" class="article-section dark-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <span class="section-number">01</span>
+                            Глава I. Откровение
+                        </h2>
+                        <div class="section-meta">
+                            <span class="meta-item"><i class="fas fa-user"></i> Автор: Альфред Пенниуорт</span>
+                            <span class="meta-item"><i class="far fa-clock"></i> Дата: 25.11.2023</span>
+                        </div>
+                    </div>
+                    
+                    <div class="article-content">
+                        <div class="article-text">
+                            <div class="centered-text">
+                                <h3>ГОТЭМ</h3>
+                                <p class="city-description">Город-гробница. Здесь нет рассвета, только смена оттенков тьмы.</p>
+                            </div>
+                            
+                            <div class="image-with-caption">
+                                <div class="image-placeholder">
+                                    <div class="image-overlay">
+                                        <i class="fas fa-eye"></i>
+                                        <span>Изображение засекречено</span>
+                                    </div>
+                                </div>
+                                <p class="image-caption">Ночной Готэм. Запись с камеры наблюдения Бэткоптера.</p>
+                            </div>
+                            
+                            <blockquote class="quote-block">
+                                <p>"Готэм создал Бэтмена так же, как Бэтмен создал Готэм. Это симбиоз боли и спасения."</p>
+                                <cite>— Доктор Джонатан Крэйн</cite>
+                            </blockquote>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Глава 2 -->
+                <section id="chapter2" class="article-section dark-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <span class="section-number">02</span>
+                            Глава II. Догмат
+                        </h2>
+                    </div>
+                    
+                    <div class="article-content">
+                        <div class="article-text">
+                            <p class="centered-text">Бог забыл о Готэме. Поэтому город породил своего защитника — не ангела, не демона. Тёмного Рыцаря.</p>
+                            
+                            <div class="batman-principles">
+                                <div class="principle">
+                                    <div class="principle-icon">
+                                        <i class="fas fa-crosshairs"></i>
+                                    </div>
+                                    <div class="principle-content">
+                                        <h4>Никаких убийств</h4>
+                                        <p>Самое важное правило. Бэтмен не убивает, независимо от обстоятельств.</p>
+                                    </div>
+                                </div>
+                                <div class="principle">
+                                    <div class="principle-icon">
+                                        <i class="fas fa-user-secret"></i>
+                                    </div>
+                                    <div class="principle-content">
+                                        <h4>Тайна личности</h4>
+                                        <p>Личность Бэтмена должна оставаться секретом для всех, кроме самых близких.</p>
+                                    </div>
+                                </div>
+                                <div class="principle">
+                                    <div class="principle-icon">
+                                        <i class="fas fa-shield-alt"></i>
+                                    </div>
+                                    <div class="principle-content">
+                                        <h4>Защита невинных</h4>
+                                        <p>Главная цель — защита граждан Готэма от любых угроз.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Хроники Ночи -->
+                <section id="chronicles" class="article-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <span class="section-number">03</span>
+                            ХРОНИКИ НОЧИ
+                        </h2>
+                        <div class="section-subtitle">
+                            <i class="fas fa-newspaper"></i> Последние события Готэма | Ноябрь 2023
+                        </div>
+                    </div>
+                    
+                    <!-- Таблица дел -->
+                    <div class="data-table-container">
+                        <div class="table-header">
+                            <h3><i class="fas fa-table"></i> АКТИВНЫЕ РАССЛЕДОВАНИЯ</h3>
+                            <div class="table-actions">
+                                <button class="btn-filter active">Все</button>
+                                <button class="btn-filter">Активные</button>
+                                <button class="btn-filter">Закрытые</button>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th><i class="fas fa-hashtag"></i> ДЕЛО</th>
+                                        <th><i class="far fa-calendar"></i> ДАТА</th>
+                                        <th><i class="fas fa-map-marker-alt"></i> ЛОКАЦИЯ</th>
+                                        <th><i class="fas fa-skull-crossbones"></i> УГРОЗА</th>
+                                        <th><i class="fas fa-tasks"></i> СТАТУС</th>
+                                        <th><i class="fas fa-info-circle"></i> ОПИСАНИЕ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="case-number">GK-247-91</td>
+                                        <td>25.11.2023</td>
+                                        <td>Амёбный Город</td>
+                                        <td>
+                                            <div class="threat-level-indicator high">
+                                                <div class="threat-bar" style="width: 91%"></div>
+                                                <span>91%</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="status-badge active">АКТИВНО</span>
+                                        </td>
+                                        <td class="case-description">"БЕЙН". Ритуальные исчезновения. Повышенная угроза.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="case-number">GK-247-90</td>
+                                        <td>23.11.2023</td>
+                                        <td>Galavan Enterprises</td>
+                                        <td>
+                                            <div class="threat-level-indicator medium">
+                                                <div class="threat-bar" style="width: 78%"></div>
+                                                <span>78%</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="status-badge closed">ЗАКРЫТО</span>
+                                        </td>
+                                        <td class="case-description">Отмывание денег. 6 чиновников получили чёрные метки.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="case-number">GK-247-89</td>
+                                        <td>21.11.2023</td>
+                                        <td>Угрюмый Пирс</td>
+                                        <td>
+                                            <div class="threat-level-indicator low">
+                                                <div class="threat-bar" style="width: 65%"></div>
+                                                <span>65%</span>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="status-badge closed">ЗАКРЫТО</span>
+                                        </td>
+                                        <td class="case-description">Наркосеть "Сомна". 6 задержанных с переломами.</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <!-- Статус города -->
+                    <div class="city-status-panel">
+                        <div class="status-header">
+                            <h3><i class="fas fa-chart-line"></i> СТАТУС ГОРОДА</h3>
+                            <div class="last-updated">Обновлено: <span id="statusTime">00:00:00</span></div>
+                        </div>
+                        
+                        <div class="status-content">
+                            <div class="status-message">
+                                <p id="cityStatusText">Временный покой. Давление растёт. Предчувствие бури.</p>
+                            </div>
+                            
+                            <div class="threat-level-display">
+                                <div class="threat-info">
+                                    <div class="threat-label">УРОВЕНЬ УГРОЗЫ</div>
+                                    <div class="threat-value" id="threatValue">74%</div>
+                                </div>
+                                <div class="threat-meter">
+                                    <div class="meter-bar" id="threatMeter" style="width: 74%"></div>
+                                    <div class="meter-ticks">
+                                        <span class="tick low">Низкий</span>
+                                        <span class="tick medium">Средний</span>
+                                        <span class="tick high">Высокий</span>
+                                        <span class="tick critical">Критический</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="threat-breakdown">
+                                <div class="breakdown-item">
+                                    <span class="category">Уличная преступность</span>
+                                    <span class="value">65%</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span class="category">Организованная</span>
+                                    <span class="value">82%</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span class="category">Супер-преступники</span>
+                                    <span class="value">91%</span>
+                                </div>
+                                <div class="breakdown-item">
+                                    <span class="category">Коррупция</span>
+                                    <span class="value">78%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Галерея персонажей (превью) -->
+                <section class="characters-preview">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <span class="section-number">04</span>
+                            КЛЮЧЕВЫЕ ПЕРСОНАЖИ
+                        </h2>
+                        <a href="characters.html" class="view-all-btn">
+                            Все персонажи <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                    
+                    <div class="characters-grid">
+                        <div class="character-card">
+                            <div class="character-image" style="background: linear-gradient(45deg, #1a1a1a, #333);">
+                                <i class="fas fa-bat" style="font-size: 3rem; color: #8b0000;"></i>
+                            </div>
+                            <div class="character-info">
+                                <h4>БЭТМЕН</h4>
+                                <div class="character-status hero">ГЕРОЙ</div>
+                                <p>Тёмный Рыцарь Готэма. Защитник города.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="character-card">
+                            <div class="character-image" style="background: linear-gradient(45deg, #2d1a4d, #6b3fa0);">
+                                <i class="fas fa-grin" style="font-size: 3rem; color: #9b30ff;"></i>
+                            </div>
+                            <div class="character-info">
+                                <h4>ДЖОКЕР</h4>
+                                <div class="character-status villain">ЗЛОДЕЙ</div>
+                                <p>Клоун-принц преступности. Агент хаоса.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="character-card">
+                            <div class="character-image" style="background: linear-gradient(45deg, #1a3d1a, #2d7d2d);">
+                                <i class="fas fa-leaf" style="font-size: 3rem; color: #32cd32;"></i>
+                            </div>
+                            <div class="character-info">
+                                <h4>ПЛЮЩ</h4>
+                                <div class="character-status villain">ЗЛОДЕЙ</div>
+                                <p>Эко-террористка. Контроль над растениями.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Генератор дел -->
+                <section class="generator-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <span class="section-number">05</span>
+                            ГЕНЕРАТОР ДЕЛ
+                        </h2>
+                        <div class="section-subtitle">
+                            <i class="fas fa-random"></i> Создание новых расследований
+                        </div>
+                    </div>
+                    
+                    <div class="generator-content">
+                        <div class="generator-controls">
+                            <button class="generate-btn" id="generateCaseBtn">
+                                <i class="fas fa-plus-circle"></i>
+                                <span>Сгенерировать дело</span>
+                            </button>
+                            <button class="generate-btn secondary" id="clearCasesBtn">
+                                <i class="fas fa-trash"></i>
+                                <span>Очистить все</span>
+                            </button>
+                            <div class="generator-options">
+                                <label>
+                                    <input type="checkbox" id="autoGenerate" checked>
+                                    <span>Автогенерация каждые 5 мин</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="generated-cases" id="generatedCases">
+                            <!-- Сюда добавляются сгенерированные дела -->
+                            <div class="empty-state">
+                                <i class="fas fa-folder-open"></i>
+                                <p>Нажмите кнопку выше для генерации нового дела</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Форма обратной связи -->
+                <section class="feedback-section dark-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <span class="section-number">06</span>
+                            СООБЩИТЬ ОБ ИНЦИДЕНТЕ
+                        </h2>
+                        <div class="section-subtitle">
+                            <i class="fas fa-exclamation-triangle"></i> Конфиденциальный канал связи с Бэтменом
+                        </div>
+                    </div>
+                    
+                    <div class="feedback-form-container">
+                        <form id="incidentForm" class="incident-form">
+                            <div class="form-group">
+                                <label for="incidentType"><i class="fas fa-skull"></i> ТИП ИНЦИДЕНТА</label>
+                                <select id="incidentType" name="incidentType" required class="form-input">
+                                    <option value="">Выберите тип...</option>
+                                    <option value="crime">Преступление</option>
+                                    <option value="sighting">Наблюдение подозреваемого</option>
+                                    <option value="evidence">Новые улики</option>
+                                    <option value="corruption">Коррупция</option>
+                                    <option value="other">Другое</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="location"><i class="fas fa-map-marker-alt"></i> МЕСТОПОЛОЖЕНИЕ</label>
+                                <input type="text" id="location" name="location" 
+                                       placeholder="Например: Амёбный Город, перекрёсток 5-й улицы..." 
+                                       required class="form-input">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="suspect"><i class="fas fa-user-secret"></i> ПОДОЗРЕВАЕМЫЙ</label>
+                                <input type="text" id="suspect" name="suspect" 
+                                       placeholder="Если известен..." class="form-input">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="urgency"><i class="fas fa-fire"></i> СРОЧНОСТЬ</label>
+                                <div class="urgency-levels">
+                                    <label class="urgency-option">
+                                        <input type="radio" name="urgency" value="low" required>
+                                        <span class="urgency-label low">НИЗКАЯ</span>
+                                    </label>
+                                    <label class="urgency-option">
+                                        <input type="radio" name="urgency" value="medium">
+                                        <span class="urgency-label medium">СРЕДНЯЯ</span>
+                                    </label>
+                                    <label class="urgency-option">
+                                        <input type="radio" name="urgency" value="high">
+                                        <span class="urgency-label high">ВЫСОКАЯ</span>
+                                    </label>
+                                    <label class="urgency-option">
+                                        <input type="radio" name="urgency" value="critical">
+                                        <span class="urgency-label critical">КРИТИЧЕСКАЯ</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="description"><i class="fas fa-file-alt"></i> ОПИСАНИЕ</label>
+                                <textarea id="description" name="description" 
+                                          placeholder="Подробно опишите инцидент..." 
+                                          rows="5" required class="form-input"></textarea>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="contact"><i class="fas fa-user-shield"></i> КОНТАКТ (опционально)</label>
+                                <input type="text" id="contact" name="contact" 
+                                       placeholder="Как с вами связаться?" class="form-input">
+                                <small class="form-note">Анонимные сообщения также принимаются</small>
+                            </div>
+                            
+                            <div class="form-actions">
+                                <button type="submit" class="generate-btn">
+                                    <i class="fas fa-paper-plane"></i>
+                                    <span>ОТПРАВИТЬ БЭТМЕНУ</span>
+                                </button>
+                                <button type="button" class="generate-btn secondary" id="clearForm">
+                                    <i class="fas fa-trash"></i>
+                                    <span>ОЧИСТИТЬ</span>
+                                </button>
+                            </div>
+                            
+                            <div class="form-security">
+                                <i class="fas fa-lock"></i>
+                                <span>Сообщение будет зашифровано. Источник защищён.</span>
+                            </div>
+                        </form>
+                        
+                        <div class="incident-preview" id="incidentPreview">
+                            <h3><i class="fas fa-eye"></i> ПРЕВЬЮ СООБЩЕНИЯ</h3>
+                            <div class="preview-content" id="previewContent">
+                                Заполните форму для предпросмотра...
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </article>
+        </main>
+    </div>
+
+    <!-- Футер -->
+    <footer class="wiki-footer">
+        <div class="footer-top">
+            <div class="footer-section">
+                <h4><i class="fas fa-shield-alt"></i> GOTHAM ARCHIVE</h4>
+                <p>Официальная база данных Тёмного Рыцаря</p>
+                <p class="security-level">
+                    <i class="fas fa-lock"></i> Уровень защиты: <span class="level-max">МАКСИМУМ</span>
+                </p>
+            </div>
+            
+            <div class="footer-section">
+                <h4><i class="fas fa-sitemap"></i> РАЗДЕЛЫ</h4>
+                <a href="index.html">Главная</a>
+                <a href="characters.html">Персонажи</a>
+                <a href="cases.html">Архив дел</a>
+                <a href="timeline.html">Хронология</a>
+                <a href="locations.html">Локации</a>
+            </div>
+            
+            <div class="footer-section">
+                <h4><i class="fas fa-server"></i> СТАТУС СИСТЕМЫ</h4>
+                <div class="system-status">
+                    <span class="status-indicator active"></span>
+                    <span>ВСЕ СИСТЕМЫ АКТИВНЫ</span>
+                </div>
+                <div class="system-info">
+                    <div class="info-item">
+                        <span>Версия:</span>
+                        <span class="value">2.4.7</span>
+                    </div>
+                    <div class="info-item">
+                        <span>Шифрование:</span>
+                        <span class="value active">АКТИВНО</span>
+                    </div>
+                    <div class="info-item">
+                        <span>Последнее обновление:</span>
+                        <span class="value" id="footerTime">00:00:00</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>
+                <i class="fas fa-copyright"></i> 2023 GOTHAM KNIGHT DATABASE 
+                • ВСЕ ДАННЫЕ ЗАШИФРОВАНЫ 
+                • DC COMICS
+            </p>
+            <p class="disclaimer">
+                <i class="fas fa-exclamation-triangle"></i> 
+                Несанкционированный доступ преследуется по закону
+            </p>
+        </div>
+    </footer>
+
+    <!-- Скрипты -->
+    <script src="mobile-menu.js"></script>
+    <script src="generator.js"></script>
+    <script src="rain.js"></script>
+    <script src="script.js"></script>
+    
+    <!-- Инициализация -->
+    <script>
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализация дождя
+            if (typeof RainEffect !== 'undefined') {
+                const rain = new RainEffect('rainOverlay');
+                rain.start(40); // Средняя интенсивность
+            }
+            
+            // Обновление времени
+            function updateTime() {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('ru-RU', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+                
+                document.querySelectorAll('#statusTime, #footerTime').forEach(el => {
+                    el.textContent = timeString;
+                });
+            }
+            
+            updateTime();
+            setInterval(updateTime, 1000);
+            
+            // Обработка поиска
+            document.getElementById('mainSearch')?.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch(this.value);
+                }
+            });
+            
+            // Мобильное меню
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const navMenu = document.getElementById('navMenu');
+            const mobileSearchBtn = document.getElementById('mobileSearchBtn');
+            const mobileSearch = document.getElementById('mobileSearch');
+            
+            mobileMenuBtn?.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                mobileSearch.classList.remove('active');
+            });
+            
+            mobileSearchBtn?.addEventListener('click', () => {
+                mobileSearch.classList.toggle('active');
+                navMenu.classList.remove('active');
+            });
+            
+            // Клик вне меню для закрытия
+            document.addEventListener('click', (e) => {
+                if (!mobileMenuBtn.contains(e.target) && !navMenu.contains(e.target)) {
+                    navMenu.classList.remove('active');
+                }
+                if (!mobileSearchBtn.contains(e.target) && !mobileSearch.contains(e.target)) {
+                    mobileSearch.classList.remove('active');
+                }
+            });
+            
+            // Функция поиска
+            function performSearch(query) {
+                if (!query.trim()) return;
+                
+                alert(`Поиск: "${query}"\n\nРезультаты:\n• Дело GK-247-91\n• Персонаж: Бэтмен\n• Локация: Амёбный Город`);
+                
+                // В реальном приложении здесь была бы логика поиска
+                console.log('Search performed:', query);
+            }
+            
+            // Динамическое обновление статуса города
+            function updateCityStatus() {
+                const statusTexts = [
+                    "Относительное спокойствие. Ситуация под контролем.",
+                    "Незначительные инциденты. Повышенная бдительность.",
+                    "Возросла активность преступных группировок.",
+                    "Критическая ситуация. Высокая активность преступных элементов.",
+                    "Временный покой. Давление в котле растёт. Предчувствие бури."
+                ];
+                
+                const threatLevels = [65, 72, 78, 85, 74];
+                const randomIndex = Math.floor(Math.random() * statusTexts.length);
+                
+                document.getElementById('cityStatusText').textContent = statusTexts[randomIndex];
+                document.getElementById('threatValue').textContent = threatLevels[randomIndex] + '%';
+                document.getElementById('threatMeter').style.width = threatLevels[randomIndex] + '%';
+                
+                // Обновление цвета индикатора
+                const meter = document.getElementById('threatMeter');
+                if (threatLevels[randomIndex] > 80) {
+                    meter.style.background = 'linear-gradient(90deg, #8b0000, #ff0000)';
+                } else if (threatLevels[randomIndex] > 70) {
+                    meter.style.background = 'linear-gradient(90deg, #cc6600, #ff9900)';
+                } else {
+                    meter.style.background = 'linear-gradient(90deg, #666666, #999999)';
+                }
+            }
+            
+            // Обновляем статус каждые 30 секунд
+            setInterval(updateCityStatus, 30000);
+            
+            // Запускаем один раз при загрузке
+            updateCityStatus();
+
+            // ========== ФОРМА ОБРАТНОЙ СВЯЗИ ==========
+            const incidentForm = document.getElementById('incidentForm');
+            const clearFormBtn = document.getElementById('clearForm');
+            const incidentPreview = document.getElementById('previewContent');
+
+            if (incidentForm) {
+                // Обновление превью в реальном времени
+                function updatePreview() {
+                    const formData = new FormData(incidentForm);
+                    const data = Object.fromEntries(formData);
+                    
+                    let previewHTML = '';
+                    
+                    if (data.incidentType) {
+                        previewHTML += `<div class="preview-item">
+                            <span class="preview-label">ТИП:</span>
+                            <span class="preview-value">${data.incidentType.toUpperCase()}</span>
+                        </div>`;
+                    }
+                    
+                    if (data.location) {
+                        previewHTML += `<div class="preview-item">
+                            <span class="preview-label">ЛОКАЦИЯ:</span>
+                            <span class="preview-value">${data.location}</span>
+                        </div>`;
+                    }
+                    
+                    if (data.suspect) {
+                        previewHTML += `<div class="preview-item">
+                            <span class="preview-label">ПОДОЗРЕВАЕМЫЙ:</span>
+                            <span class="preview-value">${data.suspect}</span>
+                        </div>`;
+                    }
+                    
+                    if (data.urgency) {
+                        const urgencyLabels = {
+                            low: 'НИЗКАЯ',
+                            medium: 'СРЕДНЯЯ', 
+                            high: 'ВЫСОКАЯ',
+                            critical: 'КРИТИЧЕСКАЯ'
+                        };
+                        previewHTML += `<div class="preview-item">
+                            <span class="preview-label">СРОЧНОСТЬ:</span>
+                            <span class="preview-value ${data.urgency}">${urgencyLabels[data.urgency] || data.urgency.toUpperCase()}</span>
+                        </div>`;
+                    }
+                    
+                    if (data.description) {
+                        const shortDesc = data.description.length > 100 
+                            ? data.description.substring(0, 100) + '...' 
+                            : data.description;
+                        previewHTML += `<div class="preview-item">
+                            <span class="preview-label">ОПИСАНИЕ:</span>
+                            <span class="preview-value">${shortDesc}</span>
+                        </div>`;
+                    }
+                    
+                    if (data.contact) {
+                        previewHTML += `<div class="preview-item">
+                            <span class="preview-label">КОНТАКТ:</span>
+                            <span class="preview-value">${data.contact}</span>
+                        </div>`;
+                    }
+                    
+                    incidentPreview.innerHTML = previewHTML || 'Заполните форму для предпросмотра...';
+                }
+                
+                // Слушаем изменения формы
+                incidentForm.addEventListener('input', updatePreview);
+                incidentForm.addEventListener('change', updatePreview);
+                
+                // Очистка формы
+                clearFormBtn.addEventListener('click', () => {
+                    if (confirm('Очистить все поля формы?')) {
+                        incidentForm.reset();
+                        incidentPreview.innerHTML = 'Заполните форму для предпросмотра...';
+                        
+                        // Показываем уведомление
+                        showNotification('Форма очищена', 'info');
+                    }
+                });
+                
+                // Отправка формы
+                incidentForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const submitBtn = incidentForm.querySelector('button[type="submit"]');
+                    const originalText = submitBtn.innerHTML;
+                    
+                    // Показываем загрузку
+                    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ОТПРАВКА...';
+                    submitBtn.disabled = true;
+                    
+                    try {
+                        // Симуляция отправки (в реальном приложении здесь был бы fetch)
+                        await new Promise(resolve => setTimeout(resolve, 1500));
+                        
+                        // Создаём случайный ID дела
+                        const caseId = `GK-${Date.now().toString().slice(-6)}`;
+                        
+                        // Показываем успешное сообщение
+                        const successHTML = `
+                            <div class="submission-status success">
+                                <i class="fas fa-check-circle"></i>
+                                <h4>СООБЩЕНИЕ ДОСТАВЛЕНО</h4>
+                                <p>Ваш инцидент зарегистрирован под номером: <strong>${caseId}</strong></p>
+                                <p>Бэтмен получил уведомление.</p>
+                                <p><em>Ожидайте сигнала летучей мыши...</em></p>
+                            </div>
+                        `;
+                        
+                        incidentForm.insertAdjacentHTML('afterend', successHTML);
+                        
+                        // Очищаем форму
+                        incidentForm.reset();
+                        incidentPreview.innerHTML = 'Заполните форму для предпросмотра...';
+                        
+                        // Показываем уведомление
+                        showNotification(`Инцидент ${caseId} зарегистрирован`, 'success');
+                        
+                        // Сохраняем в Local Storage
+                        saveIncidentToStorage(caseId);
+                        
+                        // Прячем сообщение через 5 секунд
+                        setTimeout(() => {
+                            const status = document.querySelector('.submission-status');
+                            if (status) status.remove();
+                        }, 5000);
+                        
+                    } catch (error) {
+                        // Показываем ошибку
+                        const errorHTML = `
+                            <div class="submission-status error">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <h4>ОШИБКА ПЕРЕДАЧИ</h4>
+                                <p>Не удалось отправить сообщение. Попробуйте снова.</p>
+                                <p><em>Проверьте соединение с сетью Готэма...</em></p>
+                            </div>
+                        `;
+                        
+                        incidentForm.insertAdjacentHTML('afterend', errorHTML);
+                        
+                        showNotification('Ошибка отправки', 'error');
+                        
+                        // Прячем сообщение через 5 секунд
+                        setTimeout(() => {
+                            const status = document.querySelector('.submission-status');
+                            if (status) status.remove();
+                        }, 5000);
+                        
+                    } finally {
+                        // Восстанавливаем кнопку
+                        submitBtn.innerHTML = originalText;
+                        submitBtn.disabled = false;
+                    }
+                });
+                
+                // Функция сохранения в Local Storage
+                function saveIncidentToStorage(caseId) {
+                    try {
+                        const incidents = JSON.parse(localStorage.getItem('gotham_incidents') || '[]');
+                        const formData = new FormData(incidentForm);
+                        const data = Object.fromEntries(formData);
+                        
+                        incidents.push({
+                            id: caseId,
+                            ...data,
+                            timestamp: new Date().toISOString(),
+                            status: 'received'
+                        });
+                        
+                        // Сохраняем только последние 50 инцидентов
+                        if (incidents.length > 50) {
+                            incidents.shift();
+                        }
+                        
+                        localStorage.setItem('gotham_incidents', JSON.stringify(incidents));
+                        
+                        // Обновляем статистику в сайдбаре
+                        updateIncidentStats(incidents.length);
+                        
+                    } catch (error) {
+                        console.error('Ошибка сохранения инцидента:', error);
+                    }
+                }
+                
+                // Обновление статистики
+                function updateIncidentStats(count) {
+                    const incidentCountElement = document.getElementById('incidentCount');
+                    if (incidentCountElement) {
+                        incidentCountElement.textContent = count;
+                    }
+                    
+                    // Также обновляем в сайдбаре
+                    const statsItems = document.querySelectorAll('.sidebar-stats .stat-item');
+                    if (statsItems.length >= 4) {
+                        statsItems[3].querySelector('.stat-value').textContent = count;
+                    }
+                }
+                
+                // Загружаем существующую статистику
+                try {
+                    const incidents = JSON.parse(localStorage.getItem('gotham_incidents') || '[]');
+                    updateIncidentStats(incidents.length);
+                } catch (error) {
+                    console.error('Ошибка загрузки статистики:', error);
+                }
+            }
+
+            // Вспомогательная функция для уведомлений
+            function showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.className = 'notification';
+                notification.textContent = message;
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 15px 20px;
+                    background: rgba(20,20,20,0.95);
+                    border: 1px solid #333;
+                    border-left: 4px solid ${type === 'success' ? '#006400' : type === 'error' ? '#ff0000' : '#8b0000'};
+                    border-radius: 4px;
+                    z-index: 10001;
+                    animation: slideInRight 0.3s ease;
+                    max-width: 300px;
+                    color: white;
+                    font-family: 'Electrolize', sans-serif;
+                `;
+                
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.style.animation = 'slideOutRight 0.3s ease';
+                    setTimeout(() => notification.remove(), 300);
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>

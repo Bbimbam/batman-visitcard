@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Архив дел | GOTHAM KNIGHT</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .cases-page {
+            padding: 20px;
+        }
+        
+        .page-header {
+            text-align: center;
+            padding: 60px 20px;
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9));
+            border-bottom: 1px solid #333;
+            margin-bottom: 40px;
+        }
+        
+        .page-header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(255,255,255,0.1);
+        }
+        
+        .archive-stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+        
+        .stat-card {
+            background: rgba(30,30,30,0.9);
+            border: 1px solid #333;
+            padding: 20px;
+            border-radius: 8px;
+            min-width: 150px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            color: #999;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+        
+        .filters-section {
+            background: rgba(20,20,20,0.9);
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            border: 1px solid #333;
+        }
+        
+        .filter-group {
+            margin-bottom: 25px;
+        }
+        
+        .filter-group h3 {
+            color: white;
+            margin-bottom: 15px;
+            font-family: 'Electrolize', sans-serif;
+            font-size: 1.1rem;
+        }
+        
+        .filter-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .filter-option {
+            padding: 8px 16px;
+            background: rgba(30,30,30,0.9);
+            border: 1px solid #444;
+            color: #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .filter-option:hover, .filter-option.active {
+            background: #8b0000;
+            color: white;
+            border-color: #8b0000;
+        }
+        
+        .cases-table-container {
+            overflow-x: auto;
+            background: rgba(20,20,20,0.9);
+            border-radius: 8px;
+            border: 1px solid #333;
+            padding: 20px;
+        }
+        
+        .cases-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+        
+        .cases-table th {
+            background: rgba(30,30,30,0.9);
+            padding: 15px;
+            text-align: left;
+            color: white;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            border-bottom: 2px solid #333;
+        }
+        
+        .cases-table td {
+            padding: 15px;
+            border-bottom: 1px solid #333;
+            color: #ccc;
+        }
+        
+        .cases-table tr:hover {
+            background: rgba(30,30,30,0.7);
+        }
+        
+        .case-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .status-active {
+            background: #8b0000;
+            color: white;
+        }
+        
+        .status-closed {
+            background: #006400;
+            color: white;
+        }
+        
+        .status-pending {
+            background: #666;
+            color: white;
+        }
+        
+        .threat-indicator {
+            display: inline-block;
+            width: 60px;
+            height: 6px;
+            background: #333;
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .threat-fill {
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        
+        .low { background: #00cc00; width: 30%; }
+        .medium { background: #ff9900; width: 60%; }
+        .high { background: #ff3300; width: 90%; }
+        
+        .case-details-btn {
+            background: rgba(30,30,30,0.9);
+            border: 1px solid #444;
+            color: #ccc;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+        }
+        
+        .case-details-btn:hover {
+            background: #8b0000;
+            color: white;
+            border-color: #8b0000;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 30px;
+        }
+        
+        .page-btn {
+            padding: 8px 16px;
+            background: rgba(30,30,30,0.9);
+            border: 1px solid #444;
+            color: #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .page-btn.active {
+            background: #8b0000;
+            color: white;
+            border-color: #8b0000;
+        }
+    </style>
+</head>
+<body>
+    <!-- Фон -->
+    <div class="gothic-bg"></div>
+    <div class="bg-overlay"></div>
+    
+    <!-- Навигация -->
+    <nav class="wiki-nav">
+        <div class="nav-container">
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <a href="index.html" class="nav-logo">
+                <i class="fas fa-bat"></i>
+                <span>GOTHAM KNIGHT</span>
+            </a>
+            
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html"><i class="fas fa-home"></i> Главная</a>
+                <a href="characters.html"><i class="fas fa-user-secret"></i> Персонажи</a>
+                <a href="cases.html" class="active"><i class="fas fa-folder-open"></i> Архив дел</a>
+                <a href="timeline.html"><i class="fas fa-timeline"></i> Хронология</a>
+                <a href="locations.html"><i class="fas fa-map-marked-alt"></i> Локации</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <main class="cases-page">
+        <!-- Заголовок -->
+        <section class="page-header">
+            <h1><i class="fas fa-archive"></i> АРХИВ ДЕЛ</h1>
+            <p class="page-subtitle">
+                Полная база данных всех расследований Тёмного Рыцаря с 1939 года
+            </p>
+            
+            <div class="archive-stats">
+                <div class="stat-card">
+                    <div class="stat-value">247</div>
+                    <div class="stat-label">Всего дел</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">198</div>
+                    <div class="stat-label">Закрыто</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">49</div>
+                    <div class="stat-label">Активно</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value">312</div>
+                    <div class="stat-label">Задержано</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Фильтры -->
+        <section class="filters-section">
+            <div class="filter-group">
+                <h3><i class="fas fa-filter"></i> Статус дела</h3>
+                <div class="filter-options">
+                    <span class="filter-option active" data-filter="all">Все</span>
+                    <span class="filter-option" data-filter="active">Активные</span>
+                    <span class="filter-option" data-filter="closed">Закрытые</span>
+                    <span class="filter-option" data-filter="pending">На рассмотрении</span>
+                </div>
+            </div>
+            
+            <div class="filter-group">
+                <h3><i class="fas fa-skull"></i> Уровень угрозы</h3>
+                <div class="filter-options">
+                    <span class="filter-option" data-threat="all">Все</span>
+                    <span class="filter-option" data-threat="low">Низкий (0-50%)</span>
+                    <span class="filter-option" data-threat="medium">Средний (51-75%)</span>
+                    <span class="filter-option" data-threat="high">Высокий (76-100%)</span>
+                </div>
+            </div>
+            
+            <div class="filter-group">
+                <h3><i class="fas fa-calendar"></i> Год</h3>
+                <div class="filter-options">
+                    <span class="filter-option" data-year="all">Все годы</span>
+                    <span class="filter-option" data-year="2023">2023</span>
+                    <span class="filter-option" data-year="2022">2022</span>
+                    <span class="filter-option" data-year="2021">2021</span>
+                    <span class="filter-option" data-year="2020">2020</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Таблица дел -->
+        <section class="cases-table-container">
+            <table class="cases-table" id="casesTable">
+                <thead>
+                    <tr>
+                        <th>№ ДЕЛА</th>
+                        <th>ДАТА</th>
+                        <th>НАЗВАНИЕ</th>
+                        <th>ЛОКАЦИЯ</th>
+                        <th>ПОДОЗРЕВАЕМЫЙ</th>
+                        <th>УГРОЗА</th>
+                        <th>СТАТУС</th>
+                        <th>ДЕЙСТВИЯ</th>
+                    </tr>
+                </thead>
+                <tbody id="casesTableBody">
+                    <!-- Данные загружаются через JavaScript -->
+                </tbody>
+            </table>
+            
+            <!-- Пагинация -->
+            <div class="pagination" id="pagination">
+                <!-- Пагинация генерируется через JavaScript -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Футер -->
+    <footer class="wiki-footer">
+        <div class="footer-bottom">
+            <p>
+                <i class="fas fa-copyright"></i> 2023 GOTHAM KNIGHT DATABASE • DC COMICS
+            </p>
+        </div>
+    </footer>
+
+    <!-- Данные и скрипты -->
+    <script>
+        const casesData = [
+            {
+                id: "GK-247-91",
+                date: "25.11.2023",
+                title: "Амёбный Город: Исчезновения",
+                location: "Амёбный Город",
+                suspect: "БЕЙН",
+                threat: 91,
+                status: "active",
+                description: "Серия ритуальных исчезновений в районе Амёбного Города. Все жертвы связаны с подпольными боями."
+            },
+            {
+                id: "GK-247-90",
+                date: "23.11.2023",
+                title: "Galavan Enterprises",
+                location: "Финансовый район",
+                suspect: "Тео Галаван",
+                threat: 78,
+                status: "closed",
+                description: "Отмывание денег через сеть подставных компаний. Шесть чиновников получили чёрные метки."
+            },
+            {
+                id: "GK-247-89",
+                date: "21.11.2023",
+                title: "Наркосеть 'Сомна'",
+                location: "Угрюмый Пирс",
+                suspect: "Сальваторе Марони",
+                threat: 65,
+                status: "closed",
+                description: "Подземная аптека по распространению нового наркотика 'Сомна'. Шесть задержанных."
+            },
+            {
+                id: "GK-247-88",
+                date: "18.11.2023",
+                title: "Банда 'Стражи Ночи'",
+                location: "Промзона",
+                suspect: "Неизвестно",
+                threat: 45,
+                status: "closed",
+                description: "Вооружённые ограбления банков. Задержана вся банда из 8 человек."
+            },
+            {
+                id: "GK-247-87",
+                date: "15.11.2023",
+                title: "Кибератака на GCPD",
+                location: "Штаб-квартира GCPD",
+                suspect: "Загадочник",
+                threat: 82,
+                status: "active",
+                description: "Хакерская атака на серверы полиции. Оставлены загадки."
+            },
+            {
+                id: "GK-247-86",
+                date: "10.11.2023",
+                title: "Контрабанда оружия",
+                location: "Порт Готэма",
+                suspect: "Пингвин",
+                threat: 75,
+                status: "pending",
+                description: "Контрабанда экспериментального оружия через порт."
+            },
+            {
+                id: "GK-247-85",
+                date: "05.11.2023",
+                title: "Побег из Аркхема",
+                location: "Аркхем Асайлум",
+                suspect: "Джокер",
+                threat: 95,
+                status: "active",
+                description: "Массовый побег 12 заключённых. Организатор - Джокер."
+            },
+            {
+                id: "GK-247-84",
+                date: "01.11.2023",
+                title: "Фитотерроризм",
+                location: "Ботанический сад",
+                suspect: "Ядовитый Плющ",
+                threat: 70,
+                status: "closed",
+                description: "Атака растений на посетителей ботанического сада."
+            },
+            {
+                id: "GK-247-83",
+                date: "28.10.2023",
+                title: "Криогенные кражи",
+                location: "Музей Готэма",
+                suspect: "Мистер Фриз",
+                threat: 68,
+                status: "closed",
+                description: "Кража криогенного оборудования из музея."
+            },
+            {
+                id: "GK-247-82",
+                date: "25.10.2023",
+                title: "Монетные ограбления",
+                location: "Банки Готэма",
+                suspect: "Двуликий",
+                threat: 85,
+                status: "active",
+                description: "Серия ограблений банков. Решения принимаются подбрасыванием монеты."
+            }
+        ];
+
+        // Инициализация страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            const tableBody = document.getElementById('casesTableBody');
+            const pagination = document.getElementById('pagination');
+            const filterOptions = document.querySelectorAll('.filter-option');
+            
+            let currentFilter = 'all';
+            let currentThreat = 'all';
+            let currentYear = 'all';
+            let currentPage = 1;
+            const itemsPerPage = 5;
+            
+            // Функция фильтрации дел
+            function filterCases() {
+                return casesData.filter(caseItem => {
+                    // Фильтр по статусу
+                    if (currentFilter !== 'all' && caseItem.status !== currentFilter) {
+                        return false;
+                    }
+                    
+                    // Фильтр по угрозе
+                    if (currentThreat !== 'all') {
+                        if (currentThreat === 'low' && caseItem.threat > 50) return false;
+                        if (currentThreat === 'medium' && (caseItem.threat <= 50 || caseItem.threat > 75)) return false;
+                        if (currentThreat === 'high' && caseItem.threat <= 75) return false;
+                    }
+                    
+                    // Фильтр по году (упрощённо)
+                    if (currentYear !== 'all') {
+                        const caseYear = caseItem.date.split('.')[2];
+                        if (caseYear !== currentYear) return false;
+                    }
+                    
+                    return true;
+                });
+            }
+            
+            // Функция рендеринга таблицы
+            function renderTable() {
+                const filteredCases = filterCases();
+                const startIndex = (currentPage - 1) * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+                const pageCases = filteredCases.slice(startIndex, endIndex);
+                
+                tableBody.innerHTML = '';
+                
+                pageCases.forEach(caseItem => {
+                    const row = document.createElement('tr');
+                    
+                    // Определение уровня угрозы
+                    let threatClass = 'low';
+                    if (caseItem.threat > 75) threatClass = 'high';
+                    else if (caseItem.threat > 50) threatClass = 'medium';
+                    
+                    row.innerHTML = `
+                        <td><strong>${caseItem.id}</strong></td>
+                        <td>${caseItem.date}</td>
+                        <td>${caseItem.title}</td>
+                        <td>${caseItem.location}</td>
+                        <td>${caseItem.suspect}</td>
+                        <td>
+                            <div class="threat-indicator">
+                                <div class="threat-fill ${threatClass}"></div>
+                            </div>
+                            <span style="margin-left: 10px;">${caseItem.threat}%</span>
+                        </td>
+                        <td>
+                            <span class="case-status status-${caseItem.status}">
+                                ${caseItem.status === 'active' ? 'АКТИВНО' : 
+                                  caseItem.status === 'closed' ? 'ЗАКРЫТО' : 'РАССМОТРЕНИЕ'}
+                            </span>
+                        </td>
+                        <td>
+                            <button class="case-details-btn" onclick="showCaseDetails('${caseItem.id}')">
+                                <i class="fas fa-eye"></i> Подробнее
+                            </button>
+                        </td>
+                    `;
+                    
+                    tableBody.appendChild(row);
+                });
+                
+                // Рендеринг пагинации
+                renderPagination(filteredCases.length);
+            }
+            
+            // Функция рендеринга пагинации
+            function renderPagination(totalItems) {
+                const totalPages = Math.ceil(totalItems / itemsPerPage);
+                pagination.innerHTML = '';
+                
+                // Кнопка "Назад"
+                const prevButton = document.createElement('button');
+                prevButton.className = 'page-btn';
+                prevButton.innerHTML = '<i class="fas fa-chevron-left"></i>';
+                prevButton.disabled = currentPage === 1;
+                prevButton.addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        renderTable();
+                    }
+                });
+                pagination.appendChild(prevButton);
+                
+                // Номера страниц
+                for (let i = 1; i <= totalPages; i++) {
+                    const pageButton = document.createElement('button');
+                    pageButton.className = `page-btn ${i === currentPage ? 'active' : ''}`;
+                    pageButton.textContent = i;
+                    pageButton.addEventListener('click', () => {
+                        currentPage = i;
+                        renderTable();
+                    });
+                    pagination.appendChild(pageButton);
+                }
+                
+                // Кнопка "Вперёд"
+                const nextButton = document.createElement('button');
+                nextButton.className = 'page-btn';
+                nextButton.innerHTML = '<i class="fas fa-chevron-right"></i>';
+                nextButton.disabled = currentPage === totalPages;
+                nextButton.addEventListener('click', () => {
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        renderTable();
+                    }
+                });
+                pagination.appendChild(nextButton);
+            }
+            
+            // Обработчики фильтров
+            filterOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Убираем активный класс у всех опций в группе
+                    const parent = this.parentElement;
+                    parent.querySelectorAll('.filter-option').forEach(opt => {
+                        opt.classList.remove('active');
+                    });
+                    
+                    // Добавляем активный класс текущей опции
+                    this.classList.add('active');
+                    
+                    // Обновляем фильтры
+                    if (this.dataset.filter) {
+                        currentFilter = this.dataset.filter;
+                    } else if (this.dataset.threat) {
+                        currentThreat = this.dataset.threat;
+                    } else if (this.dataset.year) {
+                        currentYear = this.dataset.year;
+                    }
+                    
+                    // Сбрасываем на первую страницу
+                    currentPage = 1;
+                    
+                    // Перерендериваем таблицу
+                    renderTable();
+                });
+            });
+            
+            // Функция показа деталей дела
+            window.showCaseDetails = function(caseId) {
+                const caseItem = casesData.find(c => c.id === caseId);
+                if (caseItem) {
+                    const details = `
+                        <h3>Детали дела: ${caseItem.id}</h3>
+                        <p><strong>Название:</strong> ${caseItem.title}</p>
+                        <p><strong>Дата:</strong> ${caseItem.date}</p>
+                        <p><strong>Локация:</strong> ${caseItem.location}</p>
+                        <p><strong>Подозреваемый:</strong> ${caseItem.suspect}</p>
+                        <p><strong>Уровень угрозы:</strong> ${caseItem.threat}%</p>
+                        <p><strong>Статус:</strong> ${caseItem.status === 'active' ? 'Активно' : 'Закрыто'}</p>
+                        <p><strong>Описание:</strong> ${caseItem.description}</p>
+                    `;
+                    
+                    alert(details);
+                }
+            };
+            
+            // Первоначальный рендеринг
+            renderTable();
+        });
+    </script>
+</body>
+</html>

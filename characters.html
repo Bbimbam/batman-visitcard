@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Персонажи | GOTHAM KNIGHT</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Стили для страницы персонажей */
+        .characters-page {
+            min-height: 100vh;
+        }
+        
+        .characters-hero {
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.9)), 
+                        url('https://images.unsplash.com/photo-1531259683007-016a7b628fc3?auto=format&fit=crop&w=1600');
+            background-size: cover;
+            background-position: center;
+            padding: 80px 20px;
+            text-align: center;
+            border-bottom: 1px solid #333;
+        }
+        
+        .characters-hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(255,255,255,0.2);
+        }
+        
+        .characters-filter {
+            background: rgba(20,20,20,0.9);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+            border: 1px solid #333;
+        }
+        
+        .filter-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+        }
+        
+        .filter-btn {
+            padding: 10px 20px;
+            background: rgba(30,30,30,0.9);
+            border: 1px solid #444;
+            color: #ccc;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 4px;
+            font-family: 'Electrolize', sans-serif;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background: #8b0000;
+            color: white;
+            border-color: #8b0000;
+        }
+        
+        .characters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            padding: 40px 20px;
+        }
+        
+        .character-card {
+            background: rgba(20,20,20,0.85);
+            border: 1px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .character-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-color: #666;
+        }
+        
+        .character-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .character-status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .hero { background: #006400; }
+        .villain { background: #8b0000; }
+        .neutral { background: #666666; }
+        
+        .character-info {
+            padding: 20px;
+        }
+        
+        .character-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: white;
+        }
+        
+        .character-alias {
+            color: #8b0000;
+            font-family: 'Share Tech Mono', monospace;
+            margin-bottom: 10px;
+        }
+        
+        .character-description {
+            color: #ccc;
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .character-stats {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .stat {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            background: rgba(30,30,30,0.9);
+            border-radius: 4px;
+        }
+        
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #999;
+        }
+        
+        /* Модальное окно персонажа */
+        .character-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 10000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .modal-content {
+            max-width: 1000px;
+            margin: 50px auto;
+            background: rgba(20,20,20,0.95);
+            border: 1px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .modal-header {
+            padding: 30px;
+            background: rgba(30,30,30,0.9);
+            border-bottom: 1px solid #333;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            padding: 0;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-body {
+            padding: 30px;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+        }
+        
+        @media (max-width: 768px) {
+            .modal-body {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .modal-image {
+            width: 100%;
+            height: 300px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 4px;
+        }
+        
+        .modal-details h3 {
+            color: #8b0000;
+            margin: 20px 0 10px;
+            font-family: 'Orbitron', sans-serif;
+        }
+        
+        .abilities-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .ability-tag {
+            padding: 5px 10px;
+            background: rgba(30,30,30,0.9);
+            border: 1px solid #444;
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Фон -->
+    <div class="gothic-bg"></div>
+    <div class="bg-overlay"></div>
+    
+    <!-- Навигация -->
+    <nav class="wiki-nav">
+        <div class="nav-container">
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+            
+            <a href="index.html" class="nav-logo">
+                <i class="fas fa-bat"></i>
+                <span>GOTHAM KNIGHT</span>
+            </a>
+            
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html"><i class="fas fa-home"></i> Главная</a>
+                <a href="characters.html" class="active"><i class="fas fa-user-secret"></i> Персонажи</a>
+                <a href="cases.html"><i class="fas fa-folder-open"></i> Архив дел</a>
+                <a href="timeline.html"><i class="fas fa-timeline"></i> Хронология</a>
+                <a href="locations.html"><i class="fas fa-map-marked-alt"></i> Локации</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <main class="characters-page">
+        <!-- Герой-секция -->
+        <section class="characters-hero">
+            <h1>ГАЛЕРЕЯ ПЕРСОНАЖЕЙ</h1>
+            <p class="page-subtitle">
+                <i class="fas fa-database"></i> Полная база данных всех обитателей Готэма | 
+                <span class="status-active">[ РЕАЛЬНОЕ ВРЕМЯ ]</span>
+            </p>
+            <p class="hero-description">
+                От Тёмного Рыцаря до самых опасных преступников — все досье Готэма в одном месте
+            </p>
+        </section>
+
+        <!-- Фильтры -->
+        <section class="characters-filter">
+            <div class="filter-options">
+                <button class="filter-btn active" data-filter="all">Все персонажи</button>
+                <button class="filter-btn" data-filter="hero">Герои</button>
+                <button class="filter-btn" data-filter="villain">Злодеи</button>
+                <button class="filter-btn" data-filter="neutral">Нейтральные</button>
+                <button class="filter-btn" data-filter="high-threat">Высокая угроза</button>
+                <button class="filter-btn" data-filter="active">Активные</button>
+            </div>
+            
+            <div class="search-box" style="margin-top: 20px; max-width: 500px; margin-left: auto; margin-right: auto;">
+                <input type="text" id="characterSearch" placeholder="Поиск персонажа..." style="width: 100%; padding: 12px 20px;">
+            </div>
+        </section>
+
+        <!-- Сетка персонажей -->
+        <section class="characters-grid" id="charactersGrid">
+            <!-- Персонажи будут добавлены через JavaScript -->
+        </section>
+    </main>
+
+    <!-- Модальное окно персонажа -->
+    <div class="character-modal" id="characterModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalCharacterName"></h2>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body" id="modalCharacterBody">
+                <!-- Контент загружается динамически -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Футер -->
+    <footer class="wiki-footer">
+        <div class="footer-bottom">
+            <p>
+                <i class="fas fa-copyright"></i> 2023 GOTHAM KNIGHT DATABASE • DC COMICS
+            </p>
+        </div>
+    </footer>
+
+    <!-- Данные персонажей -->
+    <script>
+        const charactersData = [
+            {
+                id: 1,
+                name: "Брюс Уэйн",
+                alias: "Бэтмен",
+                status: "hero",
+                threat: 0,
+                description: "Тёмный Рыцарь Готэма. После убийства родителей поклялся бороться с преступностью. Миллиардер-филантроп днём, защитник ночью.",
+                abilities: ["Пик человеческой формы", "Мастер 127 видов боевых искусств", "Гений-детектив", "Эксперт по технологиям"],
+                affiliations: ["Семья Бэтмена", "Лига Справедливости", "Wayne Enterprises"],
+                firstAppearance: "1939",
+                image: "https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&w=600&q=80",
+                stats: {
+                    intelligence: 100,
+                    strength: 90,
+                    speed: 85,
+                    durability: 95
+                }
+            },
+            {
+                id: 2,
+                name: "Джек Напье",
+                alias: "Джокер",
+                status: "villain",
+                threat: 95,
+                description: "Клоун-принц преступности. Агент абсолютного хаоса. Не имеет чётких мотивов кроме желания видеть мир горящим.",
+                abilities: ["Гениальный стратег", "Мастер манипуляции", "Неуловимый", "Сопротивление токсинам"],
+                affiliations: ["Харли Квинн", "Иногда - Пингвин"],
+                firstAppearance: "1940",
+                image: "https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&w=600&q=80",
+                stats: {
+                    intelligence: 98,
+                    strength: 65,
+                    speed: 70,
+                    durability: 75
+                }
+            },
+            {
+                id: 3,
+                name: "Селина Кайл",
+                alias: "Женщина-Кошка",
+                status: "neutral",
+                threat: 40,
+                description: "Воровка мирового класса. Действует по собственному кодексу. Часто помогает Бэтмену, но преследует собственные цели.",
+                abilities: ["Акробатика экспертного уровня", "Взлом любых замков", "Боевые искусства", "Маскировка"],
+                affiliations: ["Иногда - Бэтмен", "Сама по себе"],
+                firstAppearance: "1940",
+                image: "https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&w=600&q=80",
+                stats: {
+                    intelligence: 85,
+                    strength: 75,
+                    speed: 95,
+                    durability: 70
+                }
+            },
+            {
+                id: 4,
+                name: "Харви Дент",
+                alias: "Двуликий",
+                status: "villain",
+                threat: 85,
+                description: "Бывший окружной прокурор Готэма. После кислотной атаки стал преступником, принимающим решения подбрасыванием монеты.",
+                abilities: ["Эксперт по криминальному праву", "Тактическое мышление", "Лидер преступного синдиката"],
+                affiliations: ["Собственный синдикат"],
+                firstAppearance: "1942",
+                image: "https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&w=600&q=80",
+                stats: {
+                    intelligence: 90,
+                    strength: 80,
+                    speed: 75,
+                    durability: 80
+                }
+            },
+            {
+                id: 5,
+                name: "Освальд Кобблпот",
+                alias: "Пингвин",
+                status: "villain",
+                threat: 70,
+                description: "Криминальный босс Готэма. Владелец Айсберг Ланджа. Предпочитает финансовые преступления и контрабанду.",
+                abilities: ["Бизнес-гений", "Мастер манипуляции", "Владение тростью-оружием"],
+                affiliations: ["Владелец Айсберг Ланджа"],
+                firstAppearance: "1941",
+                image: "https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&w=600&q=80",
+                stats: {
+                    intelligence: 88,
+                    strength: 60,
+                    speed: 50,
+                    durability: 65
+                }
+            },
+            {
+                id: 6,
+                name: "Эдвард Нигма",
+                alias: "Загадочник",
+                status: "villain",
+                threat: 75,
+                description: "Гений-загадчик. Совершает преступления, оставляя сложные головоломки. Не выносит, когда его загадки не могут разгадать.",
+                abilities: ["Гениальный интеллект", "Эксперт по механическим ловушкам", "Киберпреступность"],
+                affiliations: ["Часто работает один"],
+                firstAppearance: "1948",
+                image: "https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&w=600&q=80",
+                stats: {
+                    intelligence: 99,
+                    strength: 55,
+                    speed: 60,
+                    durability: 60
+                }
+            },
+            {
+                id: 7,
+                name: "Джонатан Крэйн",
+                alias: "Пугало",
+                status: "villain",
+                threat: 80,
+                description: "Бывший психолог, специализирующийся на страхе. Использует газы и технологии для внушения фобий.",
+                abilities: ["Доктор психологии", "Химик-эксперт", "Манипуляция страхом"],
+                affiliations: ["Иногда с Джокером"],
+                firstAppearance: "1941",
+                image: "https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&w=600&q=80",
+                stats: {
+                    intelligence: 92,
+                    strength: 65,
+                    speed: 70,
+                    durability: 68
+                }
+            },
+            {
+                id: 8,
+                name: "Пэмela Айсли",
+                alias: "Ядовитый Плющ",
+                status: "villain",
+                threat: 75,
+                description: "Эко-террористка. После экспериментов получила контроль над растениями и фитотоксинами. Борется за природу любой ценой.",
+                abilities: ["Контроль растений", "Иммунитет к ядам", "Фитотоксины", "Гиброкинез"],
+                affiliations: ["Часто с Харли Квинн"],
+                firstAppearance: "1966",
+                image: "https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&w=600&q=80",
+                stats: {
+                    intelligence: 85,
+                    strength: 70,
+                    speed: 75,
+                    durability: 80
+                }
+            },
+            {
+                id: 9,
+                name: "Виктор Фриз",
+                alias: "Мистер Фриз",
+                status: "villain",
+                threat: 70,
+                description: "Криогенный гений. Совершает преступления, чтобы финансировать исследования по спасению жены.",
+                abilities: ["Криогенные технологии", "Гениальный учёный", "Кибернетическое тело"],
+                affiliations: ["Часто работает один"],
+                firstAppearance: "1959",
+                image: "https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&w=600&q=80",
+                stats: {
+                    intelligence: 95,
+                    strength: 85,
+                    speed: 60,
+                    durability: 90
+                }
+            },
+            {
+                id: 10,
+                name: "Бейн",
+                alias: "БЕЙН",
+                status: "villain",
+                threat: 90,
+                description: "Лидер Амёбного Города. Обладает сверхчеловеческой силой благодаря химическому составу Веному.",
+                abilities: ["Сверхчеловеческая сила", "Тактический гений", "Владение всеми видами оружия"],
+                affiliations: ["Лидер Амёбного Города"],
+                firstAppearance: "1993",
+                image: "https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&w=600&q=80",
+                stats: {
+                    intelligence: 88,
+                    strength: 95,
+                    speed: 75,
+                    durability: 92
+                }
+            },
+            {
+                id: 11,
+                name: "Дик Грейсон",
+                alias: "Найтвинг",
+                status: "hero",
+                threat: 0,
+                description: "Первый Робин. Теперь самостоятельный герой, защищающий Блайдхейвен. Лидер Титанов.",
+                abilities: ["Акробатика мирового уровня", "Боевые искусства", "Лидерские качества"],
+                affiliations: ["Бывший Робин", "Титаны"],
+                firstAppearance: "1940",
+                image: "https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&w=600&q=80",
+                stats: {
+                    intelligence: 85,
+                    strength: 80,
+                    speed: 90,
+                    durability: 75
+                }
+            },
+            {
+                id: 12,
+                name: "Барбара Гордон",
+                alias: "Оракул",
+                status: "hero",
+                threat: 0,
+                description: "Бывшая Бэтгёрл. После ранения стала информационным брокером и хакером для героев.",
+                abilities: ["Гениальный хакер", "Библиотекарь информации", "Бывшая акробатка"],
+                affiliations: ["Семья Бэтмена", "Бёрдс оф Прей"],
+                firstAppearance: "1967",
+                image: "https://images.unsplash.com/photo-1635805737707-575885ab0820?auto=format&fit=crop&w=600&q=80",
+                stats: {
+                    intelligence: 95,
+                    strength: 65,
+                    speed: 70,
+                    durability: 60
+                }
+            }
+        ];
+
+        // Инициализация страницы
+        document.addEventListener('DOMContentLoaded', function() {
+            const grid = document.getElementById('charactersGrid');
+            const modal = document.getElementById('characterModal');
+            const closeModal = document.getElementById('closeModal');
+            const searchInput = document.getElementById('characterSearch');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            
+            let filteredCharacters = [...charactersData];
+            
+            // Рендеринг персонажей
+            function renderCharacters(characters) {
+                grid.innerHTML = '';
+                
+                characters.forEach(character => {
+                    const card = document.createElement('div');
+                    card.className = 'character-card';
+                    card.innerHTML = `
+                        <div class="character-image" style="background: linear-gradient(45deg, #1a1a1a, #333);">
+                            <div class="character-status ${character.status}">
+                                ${character.status === 'hero' ? 'ГЕРОЙ' : 
+                                  character.status === 'villain' ? 'ЗЛОДЕЙ' : 'НЕЙТРАЛЬНЫЙ'}
+                            </div>
+                        </div>
+                        <div class="character-info">
+                            <h3 class="character-name">${character.alias}</h3>
+                            <div class="character-alias">${character.name}</div>
+                            <p class="character-description">${character.description.substring(0, 100)}...</p>
+                            <div class="character-stats">
+                                <div class="stat">
+                                    <div class="stat-value">${character.stats.intelligence}</div>
+                                    <div class="stat-label">Интеллект</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">${character.stats.strength}</div>
+                                    <div class="stat-label">Сила</div>
+                                </div>
+                                <div class="stat">
+                                    <div class="stat-value">${character.threat}</div>
+                                    <div class="stat-label">Угроза</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    
+                    card.addEventListener('click', () => openCharacterModal(character));
+                    grid.appendChild(card);
+                });
+            }
+            
+            // Открытие модального окна
+            function openCharacterModal(character) {
+                document.getElementById('modalCharacterName').textContent = `${character.alias} (${character.name})`;
+                
+                document.getElementById('modalCharacterBody').innerHTML = `
+                    <div class="modal-image" style="background: linear-gradient(45deg, #1a1a1a, #333);"></div>
+                    <div class="modal-details">
+                        <div class="character-status ${character.status}" style="display: inline-block; margin-bottom: 20px;">
+                            ${character.status === 'hero' ? 'ГЕРОЙ' : 
+                              character.status === 'villain' ? 'ЗЛОДЕЙ' : 'НЕЙТРАЛЬНЫЙ'}
+                        </div>
+                        
+                        <h3>Биография</h3>
+                        <p>${character.description}</p>
+                        
+                        <h3>Способности</h3>
+                        <div class="abilities-list">
+                            ${character.abilities.map(ability => `
+                                <span class="ability-tag">${ability}</span>
+                            `).join('')}
+                        </div>
+                        
+                        <h3>Принадлежность</h3>
+                        <p>${character.affiliations.join(', ')}</p>
+                        
+                        <h3>Первое появление</h3>
+                        <p>${character.firstAppearance}</p>
+                        
+                        <h3>Характеристики</h3>
+                        <div class="character-stats" style="max-width: 400px;">
+                            <div class="stat">
+                                <div class="stat-value">${character.stats.intelligence}</div>
+                                <div class="stat-label">Интеллект</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">${character.stats.strength}</div>
+                                <div class="stat-label">Сила</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">${character.stats.speed}</div>
+                                <div class="stat-label">Скорость</div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-value">${character.stats.durability}</div>
+                                <div class="stat-label">Выносливость</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+            
+            // Закрытие модального окна
+            closeModal.addEventListener('click', () => {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            });
+            
+            // Закрытие по клику вне модального окна
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+            
+            // Поиск
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase();
+                filteredCharacters = charactersData.filter(character => 
+                    character.name.toLowerCase().includes(query) || 
+                    character.alias.toLowerCase().includes(query) ||
+                    character.description.toLowerCase().includes(query)
+                );
+                renderCharacters(filteredCharacters);
+            });
+            
+            // Фильтры
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Убираем активный класс у всех кнопок
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    // Добавляем активный класс текущей кнопке
+                    this.classList.add('active');
+                    
+                    const filter = this.dataset.filter;
+                    
+                    switch(filter) {
+                        case 'hero':
+                            filteredCharacters = charactersData.filter(c => c.status === 'hero');
+                            break;
+                        case 'villain':
+                            filteredCharacters = charactersData.filter(c => c.status === 'villain');
+                            break;
+                        case 'neutral':
+                            filteredCharacters = charactersData.filter(c => c.status === 'neutral');
+                            break;
+                        case 'high-threat':
+                            filteredCharacters = charactersData.filter(c => c.threat >= 80);
+                            break;
+                        case 'active':
+                            filteredCharacters = charactersData.filter(c => c.threat > 0);
+                            break;
+                        default:
+                            filteredCharacters = [...charactersData];
+                    }
+                    
+                    renderCharacters(filteredCharacters);
+                });
+            });
+            
+            // Первоначальный рендеринг
+            renderCharacters(charactersData);
+        });
+    </script>
+</body>
+</html>
